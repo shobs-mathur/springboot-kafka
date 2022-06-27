@@ -1,0 +1,58 @@
+spring:
+  cloud.stream:
+    default-binder: kafka
+    default.consumer.headerMode: embeddedHeaders
+    bindings:
+      consumer-channel:
+        destination: springboot-kafka-topic
+        binder: kafka
+        contentType: application/json
+        group: consumer-group
+        consumer:
+          concurrency: 2
+      producer-channel:
+        destination: springboot-kafka-topic
+        binder: kafka
+        contentType: application/json
+        producer:
+          headerMode: none
+    kafka:
+      binder:
+        brokers: "localhost:9092"
+        zkNodes: "zookeeper:2181"
+        autoCreateTopics: true
+        replicationFactor: 1
+        autoAddPartitions: true
+        minPartitionCount: 5
+        socketBufferSize: 2097152
+      bindings:
+        consumer-channel:
+          consumer:
+            autoCommitOffset: false
+
+  application:
+    name: springboot-kafka
+  componentScan:
+    basePackages: com.shobs.springboot
+
+server:
+  port: 8200
+
+
+logging:
+  level:
+    root: INFO
+    com.amazonaws.xray.strategy: "OFF"
+    com.hubcba.cybertron.common.core: INFO
+    com.hubcba.cybertron.microservices.notification: INFO
+    javax.net.ssl: "OFF"
+    sun.security.ssl: "OFF"
+    org.apache: WARN
+    org.springframework.web.filter.CommonsRequestLoggingFilter: INFO
+    org.springframework.boot.context.embedded:
+      tomcat.TomcatEmbeddedServletContainer: INFO
+      undertow.UndertowEmbeddedServletContainer: INFO
+    org.apache.http.client.protocol.ResponseProcessCookies: ERROR
+  pattern:
+    console: "%level [%thread] %X{dd.trace_id:-},%X{dd.span_id:-} %logger{36}.%method %replace(%message){'\n','\r'} %replace(%exception){'\n','\r'}%nopex%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %X{dd.trace_id:-},%X{dd.span_id:-} %logger{36} - %message%n"
