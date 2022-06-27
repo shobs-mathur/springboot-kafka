@@ -6,7 +6,7 @@ Use the docker-compose to startup kafka in a docker container.
 
 To set the concurrency on your kafka stream listener, you need to set the concurrency property of the consumer channel
 
-`spring.cloud.stream.bindings.consumer-channel.consumer.concurrency: 6`
+```spring.cloud.stream.bindings.consumer-channel.consumer.concurrency: 6```
 
 Note: 
 1. If the instance count (or instance count * concurrency) exceeds the number of partitions, some consumers will remain idle.
@@ -23,11 +23,13 @@ To increase throughput on your consumers, we have two options -
 
 To provide manual ack/nacks for your kafka messages, set the config property below - 
 
-`spring.cloud.stream.kafka.bindings.consumer-channel.consumer.autoCommitOffset: false`
+```spring.cloud.stream.kafka.bindings.consumer-channel.consumer.autoCommitOffset: false```
 
 Then, in your kafka listener method add the below code logic to ack/nack the messages manually
 
-`Acknowledgment acknowledgment = message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class);
+```java
+Acknowledgment acknowledgment = message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class);
     if (acknowledgment != null) {
-    acknowledgment.acknowledge();
-}`
+        acknowledgment.acknowledge();
+}
+```
